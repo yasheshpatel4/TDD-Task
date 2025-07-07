@@ -11,7 +11,7 @@ public class StringCalculator {
 
         String delimiterRegex = ",|\n"; // Default delimiters
         String input = numbers;
-
+        int custom_operator=0;
         // Check for custom delimiter syntax
         if (numbers.startsWith("//")) {
             int newlineIndex = numbers.indexOf("\n");
@@ -27,12 +27,18 @@ public class StringCalculator {
                 }
                 delimiterRegex = String.join("|", delimiters);
             } else {
+                if(delimiterSection.equals("*")){
+                    custom_operator=1;
+                    delimiterRegex= String.join("|","*");
+                }
+
                 delimiterRegex = Pattern.quote(delimiterSection); // Single custom delimiter
             }
         }
 
         String[] tokens = input.split(delimiterRegex);
         int sum = 0;
+        int mul_ans=1;
         List<Integer> negativeNumbers = new ArrayList<>();
 
         for (String token : tokens) {
@@ -41,8 +47,11 @@ public class StringCalculator {
                     int number = Integer.parseInt(token.trim());
                     if (number < 0) {
                         negativeNumbers.add(number); // Track negatives
-                    } else {
+                    } else if(custom_operator==0){
                         sum = Math.addExact(sum, number); // Throws on overflow
+                    }
+                    else{
+                        mul_ans*=(number);
                     }
                 } catch (NumberFormatException e) {
                     throw new NumberFormatException("Invalid number format: '" + token.trim() + "'");
@@ -53,7 +62,12 @@ public class StringCalculator {
         if (!negativeNumbers.isEmpty()) {
             throw new IllegalArgumentException("Negative numbers not allowed: " + negativeNumbers);
         }
+        if(custom_operator==0){
+            return sum;
+        }
+        else{
+            return mul_ans;
+        }
 
-        return sum;
     }
 }

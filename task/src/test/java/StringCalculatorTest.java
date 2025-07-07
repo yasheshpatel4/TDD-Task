@@ -107,4 +107,13 @@ class StringCalculatorTest {
                 StringCalculator.add("1,abc,3")
         );
     }
+
+    @Test
+    void check_customDelimeter_as_star(){
+        assertEquals(10,StringCalculator.add("//*\n1*2*5"));
+    }
+    @Test
+    void check_customDelimeter_as_star1(){
+        assertEquals(8,StringCalculator.add("//**\n1**2**5"));
+    }
 }
